@@ -12,12 +12,19 @@ let attemptsCounter=0;
 let leftImageIndex ;
 let rightImageIndex;
 let middleImageIndex;
+let productsNames = [];
+let productsVotes = [];
+let productsShown = [];
+let showimage=[];
 function Images(name, source) {
     this.name = name;
     this.source = source;
     this.votes = 0;
     this.views=0;
     Images.allImages.push(this);
+    productsNames.push(name);
+
+ 
   }
   
 // array hold all images objects
@@ -56,24 +63,42 @@ function renderThreeImages() {
     leftImageIndex = getRandomIndex();
     middleImageIndex = getRandomIndex();
     rightImageIndex=getRandomIndex();
- 
+    showimage.push(rightImageIndex);
+    showimage.push(leftImageIndex);
+    showimage.push(middleImageIndex);
+
 do{
      rightImageIndex=getRandomIndex();
      leftImageIndex = getRandomIndex();
      middleImageIndex = getRandomIndex();
-}while (leftImageIndex === rightImageIndex||leftImageIndex===middleImageIndex||middleImageIndex===rightImageIndex)
+}while (leftImageIndex === rightImageIndex||leftImageIndex===middleImageIndex||middleImageIndex===rightImageIndex||showimage.includes(leftImageIndex)||showimage.includes(rightImageIndex)||showimage.includes(middleImageIndex))
+showimage=[];
+showimage.push(rightImageIndex);
+showimage.push(leftImageIndex);
+showimage.push(middleImageIndex);
+console.log(showimage);
+
+
 Images.allImages[leftImageIndex].views++;
+
 Images.allImages[middleImageIndex].views++;
+
 Images.allImages[rightImageIndex].views++;
 
   
+
+
+
+
     Images.allImages
-   console.log(Images.allImages[leftImageIndex]);
+   //console.log(Images.allImages[leftImageIndex]);
+
+
   
     leftImageElement.src = Images.allImages[leftImageIndex].source;
     rightImageElement.src = Images.allImages[rightImageIndex].source;
     middleImageElement.src = Images.allImages[middleImageIndex].source;
-console.log(Images.allImages);
+//console.log(Images.allImages);
     
 }renderThreeImages();
 // it will not run until we do the event 
@@ -108,7 +133,12 @@ function handleUserClick(event) {
         buttonRes.textContent='View Reslut';
         resultList.appendChild(buttonRes);
         buttonRes.addEventListener('click',buttonViewResults);
-    
+        for (let i = 0; i < Images.allImages.length; i++) {
+          productsVotes.push(Images.allImages[i].votes);
+          productsShown.push(Images.allImages[i].views);
+        }
+        //call for the chart after the votes are done
+        chartall();
     }  
 }  
 function buttonViewResults() {
@@ -120,5 +150,41 @@ function buttonViewResults() {
       resultList.appendChild(votesResult);
       votesResult.textContent = Images.allImages[i].name +  ' has ' + Images.allImages[i].votes + '  for votes , and was seen '+Images.allImages[i].views+' times.';
   }
+ 
+
+  
   }
+}
+
+function chartall() {
+  
+  // lab 12 add a chart 
+  let ctx = document.getElementById('myChart').getContext('2d');
+  // instercter function from the library
+  let chart = new Chart(ctx, {
+      // The type of chart we want to create
+      type: 'bar',
+  
+      // The data for our dataset
+      data: {
+          labels: productsNames,
+          datasets: [
+            {
+              label: 'Votes',
+              backgroundColor: 'rgb(78, 17, 17)',
+              borderColor: 'rgb(78, 17, 17)',
+              data: productsVotes,
+          }
+           ,{
+            label: 'Shown',
+            backgroundColor: 'rgb(175, 47, 73)',
+            borderColor: 'rgb(175, 47, 73)',
+            data: productsShown,
+        }
+        ]
+      },
+  
+      // Configuration options go here
+      options: {}
+  });
 }
