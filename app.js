@@ -22,7 +22,6 @@ function Images(name, source) {
     this.votes = 0;
     this.views=0;
     Images.allImages.push(this);
-    settingItems();
     productsNames.push(name);
     
   }
@@ -38,8 +37,16 @@ function Images(name, source) {
     let stringObject= localStorage.getItem('Images');
     let regularObject=JSON.parse(stringObject);
     //console.log(regularObject);
-    Images.allImages=regularObject;
-    renderThreeImages();
+    if ( regularObject!== null) {
+     
+      Images.allImages=regularObject;
+      for (let i = 0; i < Images.allImages.length; i++) {
+        productsVotes.push(Images.allImages[i].votes);
+        productsShown.push(Images.allImages[i].views);
+      }
+      
+      chartall();
+    }
 
   }
   
@@ -155,6 +162,8 @@ function handleUserClick(event) {
         }
         //call for the chart after the votes are done
         chartall();
+    settingItems();
+
     }  
 }  
 function buttonViewResults() {
