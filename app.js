@@ -22,9 +22,25 @@ function Images(name, source) {
     this.votes = 0;
     this.views=0;
     Images.allImages.push(this);
+    settingItems();
     productsNames.push(name);
+    
+  }
+  function settingItems() {
+    let data=JSON.stringify(Images.allImages);
+    //console.log(data);
+    localStorage.setItem('Images',data);
+    
+  }
+  function gettingItems() {
+   
+    
+    let stringObject= localStorage.getItem('Images');
+    let regularObject=JSON.parse(stringObject);
+    //console.log(regularObject);
+    Images.allImages=regularObject;
+    renderThreeImages();
 
- 
   }
   
 // array hold all images objects
@@ -188,3 +204,4 @@ function chartall() {
       options: {}
   });
 }
+gettingItems();
